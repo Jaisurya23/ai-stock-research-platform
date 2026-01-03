@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-exclamation-triangle fa-5x text-warning"></i>
+                    </div>
+                    
+                    <h2 class="mb-3">Oops! Something Went Wrong</h2>
+                    
+                    <div class="alert alert-danger mb-4">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-times-circle me-2"></i>Error Details
+                        </h5>
+                        <p class="mb-0">{{ error_message }}</p>
+                    </div>
+                    
+                    {% if suggestion %}
+                    <div class="alert alert-info mb-4">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-lightbulb me-2"></i>Suggestion
+                        </h6>
+                        <p class="mb-0">{{ suggestion }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if technical_details %}
+                    <details class="mb-4">
+                        <summary class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-code me-1"></i> Show Technical Details
+                        </summary>
+                        <div class="alert alert-secondary mt-3 text-start">
+                            <pre class="mb-0" style="font-size: 0.85rem;">{{ technical_details }}</pre>
+                        </div>
+                    </details>
+                    {% endif %}
+                    
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Go to Home
+                        </a>
+                        <button onclick="window.history.back()" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i>Go Back
+                        </button>
+                        <a href="/history" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-history me-2"></i>View History
+                        </a>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h5 class="mb-3">Common Issues & Solutions</h5>
+                        <div class="row g-3 text-start">
+                            <div class="col-md-6">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-search text-primary me-2"></i>Invalid Ticker
+                                        </h6>
+                                        <p class="card-text small">
+                                            Use exact ticker symbols:<br>
+                                            • NSE: HDFCBANK.NS, TCS.NS<br>
+                                            • US: AAPL, MSFT, GOOGL
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-success">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-key text-success me-2"></i>API Configuration
+                                        </h6>
+                                        <p class="card-text small">
+                                            Ensure your Gemini API key is:<br>
+                                            • Set in config.py or .env<br>
+                                            • Valid and has credits
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-network-wired text-warning me-2"></i>Network Issues
+                                        </h6>
+                                        <p class="card-text small">
+                                            Check your internet connection<br>
+                                            and try again in a few moments
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-info">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-database text-info me-2"></i>Data Unavailable
+                                        </h6>
+                                        <p class="card-text small">
+                                            Some stocks may have limited<br>
+                                            data. Try major companies first
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+details summary {
+    cursor: pointer;
+    user-select: none;
+}
+
+details summary:hover {
+    background-color: #f8f9fa;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}

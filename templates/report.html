@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Report Header -->
+<div class="report-header mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-file-alt text-primary me-2"></i>
+                Research Report
+            </h2>
+            <p class="text-muted mb-0">
+                <strong>{{ company }}</strong> • Generated on {{ created_at }}
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print
+            </button>
+            <button class="btn btn-outline-success" onclick="downloadReport()">
+                <i class="fas fa-download me-1"></i> Download
+            </button>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> New Research
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Report Navigation Tabs -->
+<ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button">
+            <i class="fas fa-chart-pie me-1"></i> Summary
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="full-tab" data-bs-toggle="tab" data-bs-target="#full" type="button">
+            <i class="fas fa-file-lines me-1"></i> Full Report
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="metrics-tab" data-bs-toggle="tab" data-bs-target="#metrics" type="button">
+            <i class="fas fa-chart-bar me-1"></i> Key Metrics
+        </button>
+    </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="reportTabContent">
+    
+    <!-- Summary Tab -->
+    <div class="tab-pane fade show active" id="summary" role="tabpanel">
+        <div class="row g-4" id="summaryContent">
+            <!-- This will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Full Report Tab -->
+    <div class="tab-pane fade" id="full" role="tabpanel">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="report-box">{{ report }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Tab -->
+    <div class="tab-pane fade" id="metrics" role="tabpanel">
+        <div class="row g-4" id="metricsContent">
+            <!-- This will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Hidden report data for JavaScript -->
+<div id="reportData" style="display: none;">{{ report }}</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Parse and display report sections
+    document.addEventListener('DOMContentLoaded', function() {
+        const reportText = document.getElementById('reportData').textContent;
+        parseAndDisplayReport(reportText);
+    });
+
+    function parseAndDisplayReport(reportText) {
+        // Parse executive summary
+        const execSections = reportText.split(/\n={20,}\n/);
+        let execContent = '';
+        for (let i = 0; i < execSections.length; i++) {
+            if (execSections[i].includes('EXECUTIVE SUMMARY')) {
+                execContent = execSections[i + 1] ? execSections[i + 1].trim() : '';
+                break;
+            }
+        }
+        
+        if (execContent) {
+            const summaryText = execContent;
+            const verdict = extractValue(summaryText, 'Overall Verdict:');
+            const score = extractValue(summaryText, 'Investment Score:');
+            const quality = extractValue(summaryText, 'Quality Rating:');
+            const risk = extractValue(summaryText, 'Risk Level:');
+            const recommendation = extractValue(summaryText, 'Recommendation:');
+            
+            displaySummaryCards(verdict, score, quality, risk, recommendation);
+        }
+
+        // Parse key metrics
+        const sections = reportText.split(/\n={20,}\n/);
+        let valuationContent = '';
+        let growthContent = '';
+        let profitContent = '';
+        let healthContent = '';
+        
+        for (let i = 0; i < sections.length; i++) {
+            const section = sections[i].trim();
+            if (section.includes('VALUATION ANALYSIS')) {
+                valuationContent = sections[i + 1] ? sections[i + 1].trim() : '';
+            } else if (section.includes('GROWTH METRICS')) {
+                growthContent = sections[i + 1] ? sections[i + 1].trim() : '';
+            } else if (section.includes('PROFITABILITY METRICS')) {
+                profitContent = sections[i + 1] ? sections[i + 1].trim() : '';
+            } else if (section.includes('FINANCIAL HEALTH')) {
+                healthContent = sections[i + 1] ? sections[i + 1].trim() : '';
+            }
+        }
+        
+        if (valuationContent || growthContent || profitContent || healthContent) {
+            displayMetrics(valuationContent, growthContent, profitContent, healthContent);
+        }
+    }
+
+    function extractValue(text, label) {
+        const regex = new RegExp(label + '\\s*(.+?)(?:\\n|$)');
+        const match = text.match(regex);
+        return match ? match[1].trim() : '';
+    }
+
+    function displaySummaryCards(verdict, score, quality, risk, recommendation) {
+        const verdictClass = verdict.includes('STRONG BUY') ? 'success' : 
+                           verdict.includes('BUY') ? 'success' :
+                           verdict.includes('HOLD') ? 'warning' : 'danger';
+        
+        const summaryHTML = `
+            <div class="col-lg-8">
+                <div class="card verdict-card border-${verdictClass} shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-gavel me-2"></i>Investment Verdict
+                        </h5>
+                        <div class="verdict-badge bg-${verdictClass} bg-opacity-10 p-3 rounded mb-3">
+                            <h3 class="text-${verdictClass} mb-0">${verdict}</h3>
+                        </div>
+                        <p class="lead mb-0">${recommendation}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-chart-simple me-1"></i> Quick Stats
+                        </h6>
+                        <div class="stat-item">
+                            <i class="fas fa-trophy text-warning me-2"></i>
+                            <strong>Score:</strong> ${score}
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star text-primary me-2"></i>
+                            <strong>Quality:</strong> ${quality}
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-shield-alt text-danger me-2"></i>
+                            <strong>Risk:</strong> ${risk}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-list-check me-2"></i>Report Sections
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="section-link" onclick="scrollToSection('COMPANY SNAPSHOT')">
+                                    <i class="fas fa-building text-primary"></i>
+                                    <span>Company Info</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="section-link" onclick="scrollToSection('VALUATION ANALYSIS')">
+                                    <i class="fas fa-calculator text-success"></i>
+                                    <span>Valuation</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="section-link" onclick="scrollToSection('NEWS SENTIMENT')">
+                                    <i class="fas fa-newspaper text-info"></i>
+                                    <span>News Analysis</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="section-link" onclick="scrollToSection('AI RESEARCH')">
+                                    <i class="fas fa-robot text-warning"></i>
+                                    <span>AI Insights</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('summaryContent').innerHTML = summaryHTML;
+    }
+
+    function displayMetrics(valuation, growth, profit, health) {
+        const metricsHTML = `
+            <div class="col-md-6">
+                <div class="card metric-card shadow-sm">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h6 class="mb-0">
+                            <i class="fas fa-dollar-sign me-2"></i>Valuation Metrics
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <pre class="metric-text">${valuation}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card metric-card shadow-sm">
+                    <div class="card-header bg-success bg-opacity-10">
+                        <h6 class="mb-0">
+                            <i class="fas fa-arrow-trend-up me-2"></i>Growth Metrics
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <pre class="metric-text">${growth}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card metric-card shadow-sm">
+                    <div class="card-header bg-warning bg-opacity-10">
+                        <h6 class="mb-0">
+                            <i class="fas fa-percent me-2"></i>Profitability Metrics
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <pre class="metric-text">${profit}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card metric-card shadow-sm">
+                    <div class="card-header bg-info bg-opacity-10">
+                        <h6 class="mb-0">
+                            <i class="fas fa-heart-pulse me-2"></i>Financial Health
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <pre class="metric-text">${health}</pre>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('metricsContent').innerHTML = metricsHTML;
+    }
+
+    function scrollToSection(sectionName) {
+        // Switch to full report tab
+        const fullTab = document.getElementById('full-tab');
+        fullTab.click();
+        
+        // Scroll after tab animation
+        setTimeout(() => {
+            const reportBox = document.querySelector('.report-box');
+            const sectionText = reportBox.textContent;
+            const sectionIndex = sectionText.indexOf(sectionName);
+            
+            if (sectionIndex !== -1) {
+                // Estimate scroll position
+                const lineHeight = 25;
+                const linesBeforeSection = sectionText.substring(0, sectionIndex).split('\n').length;
+                const scrollPosition = linesBeforeSection * lineHeight;
+                
+                reportBox.scrollTop = scrollPosition - 50;
+                
+                // Highlight effect (optional)
+                reportBox.style.backgroundColor = '#fff3cd';
+                setTimeout(() => {
+                    reportBox.style.transition = 'background-color 1s';
+                    reportBox.style.backgroundColor = '#f8fafc';
+                }, 500);
+            }
+        }, 300);
+    }
+
+    function downloadReport() {
+        const reportText = document.getElementById('reportData').textContent;
+        const company = '{{ company }}';
+        const date = '{{ created_at }}'.split(' ')[0];
+        
+        // Create blob
+        const blob = new Blob([reportText], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        
+        // Create download link
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${company}_Research_Report_${date}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        // Show success message
+        showNotification('Report downloaded successfully!', 'success');
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+        notification.style.zIndex = '9999';
+        notification.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>${message}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.transition = 'opacity 0.5s';
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+    }
+
+    // Smooth scroll for report box
+    document.addEventListener('DOMContentLoaded', function() {
+        const reportBox = document.querySelector('.report-box');
+        if (reportBox) {
+            reportBox.style.scrollBehavior = 'smooth';
+        }
+    });
+
+    // Print optimization
+    window.addEventListener('beforeprint', function() {
+        // Switch to full report tab before printing
+        document.getElementById('full-tab').click();
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + P for print
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+            e.preventDefault();
+            window.print();
+        }
+        
+        // Ctrl/Cmd + S for download
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            downloadReport();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center mb-5">
+    <div class="hero-content">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-robot text-primary"></i>
+            AI-Powered Stock Research
+        </h1>
+        <p class="lead text-muted mb-4">
+            Get comprehensive AI-driven analysis of any stock with real-time data,
+            news sentiment, and intelligent evaluation in seconds.
+        </p>
+        
+        <!-- Feature Badges -->
+        <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap hero-features">
+            <span class="badge-feature">
+                <i class="fas fa-brain me-1"></i> AI Analysis
+            </span>
+            <span class="badge-feature">
+                <i class="fas fa-chart-line me-1"></i> Real-time Data
+            </span>
+            <span class="badge-feature">
+                <i class="fas fa-newspaper me-1"></i> News Sentiment
+            </span>
+            <span class="badge-feature">
+                <i class="fas fa-shield-check me-1"></i> Risk Assessment
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Research Form Card -->
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+        <div class="card research-card shadow-lg">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <h3 class="card-title mb-2">
+                        <i class="fas fa-search text-primary me-2"></i>
+                        Start Your Research
+                    </h3>
+                    <p class="text-muted">
+                        Enter any company name or stock ticker to generate a comprehensive research report
+                    </p>
+                </div>
+
+                <form method="POST" action="/research" id="researchForm">
+                    <div class="mb-4">
+                        <label for="companyInput" class="form-label fw-semibold">
+                            <i class="fas fa-building me-1"></i>
+                            Company Name or Ticker Symbol
+                        </label>
+                        <input 
+                            type="text" 
+                            name="company" 
+                            id="companyInput"
+                            class="form-control form-control-lg"
+                            placeholder="e.g., Apple, AAPL, TCS, Reliance"
+                            required
+                            autocomplete="off">
+                        <div class="form-text mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Works with stocks from global exchanges (NSE, NYSE, NASDAQ, etc.)
+                        </div>
+                    </div>
+
+                    <!-- Popular Stocks Quick Select -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold mb-3">
+                            <i class="fas fa-fire text-danger me-1"></i>
+                            Or try these popular stocks:
+                        </label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('AAPL')">
+                                <i class="fab fa-apple me-1"></i> Apple
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('MSFT')">
+                                <i class="fab fa-microsoft me-1"></i> Microsoft
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('GOOGL')">
+                                <i class="fab fa-google me-1"></i> Google
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('TSLA')">
+                                <i class="fas fa-car me-1"></i> Tesla
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('TCS.NS')">
+                                <i class="fas fa-code me-1"></i> TCS
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('RELIANCE.NS')">
+                                <i class="fas fa-industry me-1"></i> Reliance
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary stock-pill" onclick="selectStock('INFY.NS')">
+                                <i class="fas fa-laptop-code me-1"></i> Infosys
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 btn-research">
+                        <i class="fas fa-rocket me-2"></i>
+                        Generate Research Report
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="info-card p-4">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-chart-line fa-3x text-primary"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Comprehensive Analysis</h5>
+                <p class="text-muted mb-0">
+                    Get detailed insights on valuation, growth, profitability, and financial health
+                    with 25+ key metrics analyzed.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="info-card p-4">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-newspaper fa-3x text-success"></i>
+                </div>
+                <h5 class="fw-bold mb-2">News Sentiment</h5>
+                <p class="text-muted mb-0">
+                    AI-powered analysis of recent news with sentiment scoring, categorization,
+                    and impact assessment.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="info-card p-4">
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="fas fa-list-check fa-3x text-warning"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Intelligent Checklist</h5>
+                <p class="text-muted mb-0">
+                    Smart evaluation engine scores companies across 5 key categories with
+                    weighted analysis and verdict.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- What You Get Section -->
+<div class="card shadow-sm mb-5">
+    <div class="card-header bg-primary bg-opacity-10 border-0">
+        <h4 class="mb-0 py-2">
+            <i class="fas fa-gift text-primary me-2"></i>
+            What You'll Get in Your Report
+        </h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-file-invoice-dollar text-primary"></i>
+                    <h6>Financial Snapshot</h6>
+                    <small class="text-muted">Company basics, market cap, sector analysis</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-calculator text-success"></i>
+                    <h6>Valuation Metrics</h6>
+                    <small class="text-muted">P/E, PEG, P/B, EV/EBITDA ratios</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-arrow-trend-up text-info"></i>
+                    <h6>Growth Analysis</h6>
+                    <small class="text-muted">Revenue & earnings CAGR, trends</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-percent text-warning"></i>
+                    <h6>Profitability</h6>
+                    <small class="text-muted">ROE, ROA, margins analysis</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-heart-pulse text-danger"></i>
+                    <h6>Financial Health</h6>
+                    <small class="text-muted">Liquidity, debt, cash flow metrics</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-newspaper text-secondary"></i>
+                    <h6>News Sentiment</h6>
+                    <small class="text-muted">Recent headlines with AI sentiment</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-shield-alt text-primary"></i>
+                    <h6>Risk Assessment</h6>
+                    <small class="text-muted">Volatility, debt, market risks</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-box">
+                    <i class="fas fa-robot text-success"></i>
+                    <h6>AI Insights</h6>
+                    <small class="text-muted">Comprehensive AI-generated analysis</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h4 class="text-center mb-4">
+            <i class="fas fa-cogs text-primary me-2"></i>
+            How It Works
+        </h4>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <span class="fs-3 fw-bold text-primary">1</span>
+                    </div>
+                </div>
+                <h6 class="fw-bold">Enter Ticker</h6>
+                <p class="text-muted small mb-0">Type any company name or stock symbol</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <span class="fs-3 fw-bold text-success">2</span>
+                    </div>
+                </div>
+                <h6 class="fw-bold">AI Analyzes</h6>
+                <p class="text-muted small mb-0">Our AI fetches and analyzes data</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <span class="fs-3 fw-bold text-warning">3</span>
+                    </div>
+                </div>
+                <h6 class="fw-bold">Get Report</h6>
+                <p class="text-muted small mb-0">Receive comprehensive analysis</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-info bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <span class="fs-3 fw-bold text-info">4</span>
+                    </div>
+                </div>
+                <h6 class="fw-bold">Make Decision</h6>
+                <p class="text-muted small mb-0">Use insights for your research</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h4 class="mb-2">Generating Research Report...</h4>
+        <p class="text-muted mb-0">
+            <i class="fas fa-clock me-1"></i>
+            This may take 30-60 seconds
+        </p>
+        <div class="mt-3">
+            <small class="text-muted d-block" id="loadingStep">Fetching financial data...</small>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Quick stock selection
+    function selectStock(ticker) {
+        document.getElementById('companyInput').value = ticker;
+        document.getElementById('companyInput').focus();
+    }
+
+    // Form submission with loading overlay
+    document.getElementById('researchForm').addEventListener('submit', function(e) {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.style.display = 'flex';
+        
+        // Simulate loading steps
+        const steps = [
+            'Fetching financial data...',
+            'Analyzing news sentiment...',
+            'Running checklist evaluation...',
+            'Generating AI insights...',
+            'Finalizing report...'
+        ];
+        
+        let stepIndex = 0;
+        const stepInterval = setInterval(() => {
+            if (stepIndex < steps.length) {
+                document.getElementById('loadingStep').textContent = steps[stepIndex];
+                stepIndex++;
+            } else {
+                clearInterval(stepInterval);
+            }
+        }, 8000);
+    });
+
+    // Auto-focus on input
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('companyInput').focus();
+    });
+
+    // Enter key support for stock pills
+    document.querySelectorAll('.stock-pill').forEach(btn => {
+        btn.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.click();
+            }
+        });
+    });
+</script>
+{% endblock %}
