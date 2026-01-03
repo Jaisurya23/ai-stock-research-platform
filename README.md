@@ -308,10 +308,7 @@ This platform is for **educational and research purposes only**. It does NOT con
 - **Font Awesome** - Icons
 
 ## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ai-stock-research-platform/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ai-stock-research-platform/discussions)
-- **Email**: your.email@example.com
+- **Email**: jaisurya230904@gmail.com
 
 ## 🌟 Star History
 
@@ -319,6 +316,6 @@ This platform is for **educational and research purposes only**. It does NOT con
 
 ---
 
-**Made with ❤️ by [Your Name](https://github.com/yourusername)**
+**Made with ❤️ by [Jaisurya](https://github.com/yourusername)**
 
 If you find this project helpful, please consider giving it a ⭐ on GitHub!
