@@ -310,11 +310,6 @@ This platform is for **educational and research purposes only**. It does NOT con
 ## 📞 Support
 - **Email**: jaisurya230904@gmail.com
 
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/ai-stock-research-platform&type=Date)](https://star-history.com/#yourusername/ai-stock-research-platform&Date)
-
----
 
 **Made with ❤️ by [Jaisurya](https://github.com/yourusername)**
 
